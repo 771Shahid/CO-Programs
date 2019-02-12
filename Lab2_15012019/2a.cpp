@@ -1,83 +1,170 @@
-#include<iostream>
-#include<stack>
-#include<math.h>
-using namespace std;
-int bintohex(int);
-//void hextobin(int);
-int main()
+#include<stdio.h>
+#include<string.h>
+int stack[50],top=-1;
+
+int pop();
+void push(int);
+int todecimal(int);
+void tobinary(int,int);
+
+void main()
 {
-    int ch,x;
+    int choice,number,remainder,digit,i=0;
+    char hexa[20];
     do
     {
-        cout<<"\nEnter the choice from the menu given below\n";
-        cout<<"\n1> To convert from Binary to Hexadecimal and octal\n";
-        cout<<"2> To convert from Hexadecimal or octal to Binary\n";
-        cout<<"3>Exit"<<endl;
-        cin>>ch;
-
-        switch(ch)
+        printf("1: HEXADECIMAL TO BINARY\n2: OCTAL TO BINARY\n");
+        printf("3: BINARY TO HEXADECIMAL\n4: BINARY TO OCTAL\n0: EXIT\n");
+        printf("ENTER YOUR CHOICE: ");
+        scanf("%d",&choice);
+        switch(choice)
         {
-        case 1:
-            cout<<"Enter the number"<<endl;
-            cin>>x;
-            cout<<"The equivalent of "<<x<<" is ";
-            bintohex(x);
-            break;
-      // case 2:
-          //  cout<<"Enter the number"<<endl;
-          //  cin>>x;
-           // cout<<"The equivalent of "<<x<<" is ";
-           // hextobin(x);
-          //  break;
-        case 3:
-            break;
+            case 1: //CONVERTING HEXADECIMAL NUMBER TO BINARY
+                    printf("\nENTER A HEXADECIMAL NUMBER: ");
+                    scanf("%s",&hexa);
+                    printf("CORRESPONDING BINARY NUMBER IS ");
+                    for(i=0;i<strlen(hexa);i++)
+                    {
+                        digit=hexa[i];
+                        switch(digit)
+                        {
+                            case 'A': tobinary(4,10);
+                                        break;
+                            case 'B': tobinary(4,11);
+                                        break;
+                            case 'C': tobinary(4,12);
+                                        break;
+                            case 'D': tobinary(4,13);
+                                        break;
+                            case 'E': tobinary(4,14);
+                                        break;
+                            case 'F': tobinary(4,15);
+                                        break;
+                            default: tobinary(4,digit-'0');
+                        }
+
+                    }
+                    break;
+            case 2: //CONVERTING OCTAL NUMBER TO BINARY
+                    printf("\nENTER AN OCTAL NUMBER: ");
+                    scanf("%d",&number);
+                    printf("CORRESPONDING OCTAL NUMBER IS : ");
+                    while(number)
+                    {
+                        digit=number%10;
+                        i=i*10+digit;
+                        number=number/10;
+                    }
+                    while(i!=0)
+                    {
+                        digit=i%10;
+                        tobinary(3,digit);
+                        i=i/10;
+                    }
+                    break;
+            case 3: //CONVERTING BINARY NUMBER TO HEXADECIMAL
+                    printf("\nENTER A BINARY NUMBER: ");
+                    scanf("%d",&number);
+                    while(number)
+                    {
+                        remainder=number%10000;
+                        switch(remainder)
+                        {
+                            case 1010: push('A');
+                                        break;
+                            case 1011: push('B');
+                                        break;
+                            case 1100: push('C');
+                                        break;
+                            case 1101: push('D');
+                                        break;
+                            case 1110: push('E');
+                                        break;
+                            case 1111: push('F');
+                                        break;
+                            default: push(todecimal(remainder));
+                        }
+                        number=number/10000;
+                    }
+                    printf("CORRESPONDING HEXADECIMAL NUMBER IS ");
+                    while(top!=-1)
+                    {
+                        digit=pop();
+                        switch(digit)
+                        {
+                            case 65: printf("%c",digit);
+                                        break;
+                            case 66: printf("%c",digit);
+                                        break;
+                            case 67: printf("%c",digit);
+                                        break;
+                            case 68: printf("%c",digit);
+                                        break;
+                            case 69: printf("%c",digit);
+                                        break;
+                            case 70: printf("%c",digit);
+                                        break;
+                            default: printf("%d",digit);
+                        }
+                    }
+                    break;
+            case 4: //CONVERTING BINARY NUMBER TO OCTAL
+                    printf("\nENTER A BINARY NUMBER: ");
+                    scanf("%d",&number);
+                    while(number)
+                    {
+                        remainder=number%1000;
+                        push(remainder);
+                        number=number/1000;
+                    }
+                    printf("CORRESPONDING OCTAL NUMBER IS ");
+                    while(top!=-1)
+                    {
+                        digit=pop();
+                        digit=todecimal(digit);
+                        printf("%d",digit);
+                    }
+                    break;
         }
-    }
-    while(ch!=3);
+        printf("\n\n");
+    }   while(choice);
+}
 
-    return 0;
-    }
-
-
-    int bintohex(int x)
+int todecimal(int number)
+{
+    int sum=0,p=0;
+    while(number)
     {
- long int binaryval, hexadecimal = 0, g = 1, remainder;
-int s=x;
+        sum=sum+(number%10)*pow(2,p);
+        number=number/10;
+        p++;
+    }
+    return sum;
+}
 
-        int octnum = 0, decinum = 0, i = 0;
+void push(int n)
+{
+    stack[++top]=n;
+}
 
-        while(x != 0)
-        {
-                decinum += (x % 10) * pow(2,i);
-                ++i;
-                x /= 10;
-        }
-        i = 1;
-        while (decinum != 0)
-        {
-                octnum += (decinum % 8) * i;
-                decinum /= 8;
-                i *= 10;
-        }
-        cout<<"\nThe octal equivalent of the number is :"<<octnum;
-        {
+int pop()
+{
+    return(stack[top--]);
+}
 
-            while (s != 0)
-
+void tobinary(int bit,int n)
+{
+    while(n>0)
     {
-        remainder = s % 10;
-        hexadecimal = hexadecimal + remainder * g;
-        g = g * 2;
-        s = s / 10;
-    }//End of while
-    cout<<"\nEquivalent hexadecimal value: ";
-    cout<<hexadecimal;
-       }
- }//End of the function
+        push(n%2);
+        n=n/2;
+    }
+    for(n=top+1;n<bit;n++)
+    {
+        printf("0");
+    }
+    while(top!=-1)
+        printf("%d",pop());
 
-
-
-   void hextobin(int x)
-   {
-
-   }
+    printf(" ");
+}
